@@ -19,7 +19,6 @@ public class Student {
     )
     private Long id;
     private String name;
-
     private LocalDate birth;
     private String email;
     @Transient

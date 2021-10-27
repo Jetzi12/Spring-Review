@@ -1,12 +1,15 @@
 package com.example.demo.student;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.persistence.Entity;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.List;
@@ -35,6 +38,18 @@ public class StudentService {
         }
         studentRepository.save(student);
     }
+
+    @Transactional
+    public void updateStudent(Long id, String newName, String newEmail){
+    if(studentRepository.existsById(id)){
+       studentRepository.findById(id).get().setEmail(newEmail);
+        studentRepository.findById(id).get().setName(newName);
+    } else {
+        throw new IllegalStateException("wrong id");
+    }
+    studentRepository.save(studentRepository.getById(id));
+    }
+
 
     public void deleteStudent(Long studentId) {
         boolean exists = studentRepository.existsById(studentId);
