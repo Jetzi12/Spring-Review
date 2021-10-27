@@ -41,7 +41,8 @@ public class StudentService {
 
     @Transactional
     public void updateStudent(Long id, String newName, String newEmail){
-    if(studentRepository.existsById(id)){
+Optional<Student> studentOptional = studentRepository.findById(id);
+    if(studentOptional.isPresent()){
        studentRepository.findById(id).get().setEmail(newEmail);
         studentRepository.findById(id).get().setName(newName);
     } else {
