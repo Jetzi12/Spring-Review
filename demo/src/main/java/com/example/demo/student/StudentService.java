@@ -3,6 +3,7 @@ package com.example.demo.student;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 
@@ -43,6 +45,25 @@ public class StudentService {
         } else {
             studentRepository.deleteById(studentId);
         }
+
+    }
+    @Transactional
+    public void updateStudent(Long studentId, String name, String email) {
+    Student student = studentRepository.findById(studentId).orElseThrow(() -> new IllegalStateException ("wrong id"));
+
+        if (name != null && name.length() > 0 && !Objects.equals(name,student.getName())){
+            student.setName(name);
+        }
+
+        if (email != null && email.length() > 0 && !Objects.equals(email,student.getEmail())){
+            if (studentRepository.findStudentByEmail(email).isPresent()){
+                throw new IllegalStateException("That address email is already taken");
+            } else {
+                student.setEmail(email);
+            }
+
+        }
+
 
     }
 }
